@@ -7,5 +7,5 @@ Post /v1/user
 
 Put /v1/user/:id
 
-get /healthz
+get /healthz heartbeat of the server
 
