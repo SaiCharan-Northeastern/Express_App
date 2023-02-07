@@ -16,7 +16,7 @@ it('it should return the heartbeat', async function(){
     }
     const response = await request(app).get('/healthz').send(user);
 
-    expect (response.status).to.eql(400);
+    expect (response.status).to.eql(200);
 } )
 
 })
