@@ -9,11 +9,16 @@ module.exports = {
 
 create: async(req,res) => {
 
-if (req.body.password && req.body.username && req.body.firstname && req.body.lastname) {
+if (req.body.password && req.body.username && req.body.first_name && req.body.last_name) {
    
-    var {firstname,lastname,username,password} = req.body;
-    const listone = await User.findOne({ where: { username: username } });
-    if (listone === null) {
+    var {first_name,last_name,username,password} = req.body;
+    const listOne = await User.findOne({ where: { username: username } });
+
+    if(typeof req.body.id !== "undefined"){
+        return res.sendStatus(400);
+    }
+
+    if (listOne === null) {
 
         const salt = await bcrypt.genSalt(10);
         password =  await bcrypt.hash(req.body.password,salt);
@@ -21,21 +26,21 @@ if (req.body.password && req.body.username && req.body.firstname && req.body.las
         await User.create ({
             username,
             password,
-            firstname,
-            lastname
+            first_name,
+            last_name
         });
 
         const list_get = await User.findOne({ where: { username: username } });
         const {id,createdAt,updatedAt} = list_get
-        res.status(201).json({msg: "User created", firstname,lastname,username,id,createdAt,updatedAt});
+        res.status(201).json({first_name,last_name,username,id,createdAt,updatedAt});
     }
     else {
-        res.status(400).json({msg:"User Already Exists"});
+        res.sendStatus(400);
     }
     
 }
 else {
-    res.status(400).json({msg:"Enter all the required fields"});
+    res.sendStatus(400);
 }
 
 },
@@ -45,7 +50,7 @@ verify: async(req,res) => {
 
    
         if(req.headers.authorization === undefined){
-            res.status(401).send('Please provide WWW-Authorization using basic in headers with base 64 encoding');
+           return res.sendStatus(400);
         }
         else
         {
@@ -59,7 +64,7 @@ verify: async(req,res) => {
         
         const list_1 = await User.findOne({ where: { username: name } });
 
-        if (list_1 === null){
+        if (list_1 === null || req.body === ""){
             return res.status(401).json({ msg: " User Not Found" })
         }
         else {
@@ -69,20 +74,19 @@ verify: async(req,res) => {
         if(username === name){
             if (verified) {
                 if(req.params.id == list_1.id){
-                    const {username,id,createdAt,updatedAt,firstname,lastname} = list_1
-                    return res.status(200).json({ msg: "Login success" ,username,id,firstname,lastname,createdAt,updatedAt}) }  
+                    const {username,id,createdAt,updatedAt,first_name,last_name} = list_1
+                    return res.status(200).json({username,id,first_name,last_name,createdAt,updatedAt}) }  
                 else{
-                    const id = req.params.id;
-                    const id2 = list_1.id;
-                    return res.status(403).json({ msg: "Not authorized to see other profiles" })
+                   
+                    return res.sendStatus(403);
                     }
                 }
             else {
-                return res.status(401).json({ msg: "Invalid password" })
+                return res.sendStatus(401);
             }
         }
         else {
-            return  res.status(401).json({ msg: "Invalid username" })
+            return  res.sendStatus(401);
         }
         }
 }
@@ -92,7 +96,7 @@ verify: async(req,res) => {
 update: async function (req, res) {
 
     if(req.headers.authorization === undefined){
-        res.status(401).send('Please provide WWW-Authorization using basic in headers with base 64 encoding');
+     return res.sendStatus(400);
     }
     else
     {
@@ -107,51 +111,57 @@ update: async function (req, res) {
     const list_1 = await User.findOne({ where: { username: name } });
 
     if (list_1 === null){
-        return res.status(401).json({ msg: " User Not Found" })
+        return res.sendStatus(400);
     }
     else {
 
     var  {username,password} =  list_1;
     const verified = bcrypt.compareSync(pass,password);
+
     if(username === name){
         if (verified) {
+           if ( typeof req.body.first_name === "undefined" || typeof req.body.last_name === "undefined" || typeof req.body.password === "undefined" || typeof req.body.username === "undefined"){
+          return res.sendStatus(400);
+           }
             if(req.params.id == list_1.id){
-                var {username,id,createdAt,updatedAt,firstname,lastname,password} = list_1
+                var {username,id,createdAt,updatedAt,first_name,last_name,password} = list_1
 
                 const salt = await bcrypt.genSalt(10);
                 password =  await bcrypt.hash(req.body.password,salt);
 
-            //req.username compare with name
-            //if diff 400;
-            
-                await User.update(
+            if(req.body.username === list_1.username){
+                try{await User.update(
                     {
                      password: password,
-                     firstname: req.body.firstname,
-                     lastname:req.body.lastname
+                     first_name: req.body.first_name,
+                     last_name:req.body.last_name
                     },
                     {
                       where: { username: name },
                     }
                   );
 
-                  const list_to_show = await User.findOne({ where: { username: name } });
-
-
-
-                return res.status(200).json({ msg: "Login success" ,id,firstname,lastname,createdAt,updatedAt}) }  
+                return res.sendStatus(204);
+            }  catch(e){
+                return res.sendStatus(400);
+            }
+            }
+            else {
+                return res.sendStatus(400);
+            }
+        }
+               
             else{
-                const id = req.params.id;
-                const id2 = list_1.id;
-                return res.status(403).json({ msg: "Not authorized to see other profiles" })
+              
+                return res.sendStatus(403);
                 }
             }
         else {
-            return res.status(401).json({ msg: "Invalid password" })
+            return res.sendStatus(401);
         }
     }
     else {
-        return  res.status(401).json({ msg: "Invalid username" })
+        return  res.sendStatus(401);
     }
     }
 }
@@ -159,13 +169,4 @@ update: async function (req, res) {
     
 }
 
-}
-/*  User.update({
-                          username,
-                          password,
-                          firstname,
-                          lastname
-                        },
-                        {
-                                where: { username: name },
-                        });*/
+};
