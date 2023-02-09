@@ -177,7 +177,7 @@ update: async (req,res)=>{
          return res.sendStatus(400);
         }
 
-        console.log(typeof req.body.date_added); 
+        
         if(typeof req.body.date_added !== "undefined" || typeof req.body.date_last_updated !== "undefined" || typeof req.body.id !== "undefined" ){
             return res.sendStatus(400);
         }
@@ -185,7 +185,7 @@ update: async (req,res)=>{
         const search_sku = req.body.sku;
 
         const list_sku = await Product.findOne({where: {sku:search_sku}});
-        if(list_sku === null){
+        if(list_sku === undefined || list_sku === null){
 
         try{
             await Product.update(
@@ -209,6 +209,8 @@ update: async (req,res)=>{
 
         }
         else {
+            console.log(req.params.id,list_sku.id);
+            if(req.params.id == list_sku.id){
             try{
                 await Product.update(
                     {
@@ -223,11 +225,16 @@ update: async (req,res)=>{
                       where: { id: search_code },
                     }
                   );
-                res.sendStatus(204);
+                return res.sendStatus(204);
             }
             catch(e){
                 res.sendStatus(400);
             }
+        }
+    
+    else{
+        res.sendStatus(400);
+    }
         }
 
     }
@@ -344,6 +351,8 @@ patch : async (req,res) =>{
                 }
             }
             else {
+
+               if(req.params.id == list_dups.id){
                 try{
                     await Product.update(
                         {
@@ -362,6 +371,10 @@ patch : async (req,res) =>{
                 catch(e){
                     res.sendStatus(400);
                 }
+            }
+            else{
+                return res.sendStatus(400);
+            }
             }
         }
         else{
