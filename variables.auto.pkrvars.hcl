@@ -8,8 +8,6 @@ ami_name="amazon-linux-2-node-mysql-ami"
 ssh_username="ec2-user"
 ssh_timeout="2h"
 ami_user="117079856859"
-<<<<<<< HEAD
 owner="amazon"
-=======
-owner="amazon"
->>>>>>> 2c3f383dad01c7cd7a1f173fb6a93369d628dbf2
+
+
