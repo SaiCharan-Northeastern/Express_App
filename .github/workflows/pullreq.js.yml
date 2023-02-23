@@ -1,0 +1,42 @@
+name: Packer Validate
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+        
+    - name: Zip repository
+      run: |
+        mkdir -p dist
+        git archive --format=zip HEAD -o dist/Express_App-1.zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-repo
+        path: dist/Express_App-1.zip
+
+    - name: Packer Init
+      run: packer init .
+
+    - name: Configure AWS Credentials and build packer
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: 'us-east-1'
+
+    - name: Packer Validate
+      run: packer validate .
+
+    - name: Clean up
+      run: |
+        rm -r dist
