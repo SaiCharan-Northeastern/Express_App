@@ -36,7 +36,7 @@ build {
    sources = ["source.amazon-ebs.amazon-linux-2"]
 
   provisioner "file" {
-source = "../Express_App.zip"
+source = "dist/Express_App-1.zip"
 destination = "/home/ec2-user/ExpressApp.zip"
 }
 
