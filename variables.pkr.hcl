@@ -41,4 +41,8 @@ variable "ami_user" {
 
 variable "owner" {
     type = string
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 2c3f383dad01c7cd7a1f173fb6a93369d628dbf2
