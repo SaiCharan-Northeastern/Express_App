@@ -22,7 +22,7 @@ sudo mysql -u root -p$temp --connect-expired-password -e "ALTER USER 'root'@'loc
 
 cd /home/ec2-user && unzip ./ExpressApp.zip
 
-cd ~/Express_App-1
+# cd ~/Express_App-1
 
 npm install
 
