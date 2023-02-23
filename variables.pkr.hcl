@@ -35,9 +35,9 @@ variable "ssh_timeout" {
 }
 
 variable "ami_user" {
-    type = string
+    type = list(string)
 }
 
 variable "owner" {
-    type = list(string)
+    type = string
 }
