@@ -39,5 +39,5 @@ variable "ami_user" {
 }
 
 variable "owner" {
-    type = list(string)
+    type = string
 }
