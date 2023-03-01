@@ -48,6 +48,7 @@ destination =  "/tmp/ExpressApp.service"
   provisioner "shell" {
     script = "./app.sh"
   }
+}
 
 
 
