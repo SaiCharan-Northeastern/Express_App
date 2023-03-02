@@ -19,7 +19,7 @@ it('it should return the heartbeat', async function(){
     expect (response.status).to.eql(200);
 } )
 
-})
+});
 
 
 
