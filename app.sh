@@ -9,6 +9,8 @@ sudo yum update -y
     curl -sL https://rpm.nodesource.com/setup_16.x | sudo -E bash -
     sudo yum install -y nodejs
 
+    sudo yum install mysql -y
+
     # Install MySQL
     # sudo amazon-linux-extras install epel -y 
     # sudo yum install https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm -y

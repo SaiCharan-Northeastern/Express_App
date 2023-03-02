@@ -413,7 +413,7 @@ const vUser = (username === name) ? true : false;
 
       });
 
-      return res.sendStatus(200);
+      return res.sendStatus(204);
 
   }
 
