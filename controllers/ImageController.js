@@ -113,7 +113,7 @@ const vUser = (username === name) ? true : false;
           s3_bucket_path: s3ObjectLocation,
         });
         if (i) {
-          return res.sendStatus(201).json(i);
+          return res.status(201).json(i);
         }
       }
       catch(e){
