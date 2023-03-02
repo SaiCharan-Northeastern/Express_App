@@ -107,11 +107,14 @@ const vUser = (username === name) ? true : false;
         console.log(`file location : ${s3ObjectLocation}`);
 
     try{
-          await Image.create({
+          const i = await Image.create({
           ProductId: productId,
           name: req.file.originalname,
           s3_bucket_path: s3ObjectLocation,
         });
+        if (i) {
+          return res.sendStatus(201).json(i);
+        }
       }
       catch(e){
         return res.sendStatus(400);
