@@ -408,12 +408,23 @@ const vUser = (username === name) ? true : false;
           //   return res.sendStatus(400);
           // } 
           //   return res.sendStatus(200);
-          
+          const list_prod = await Product.findOne({ where: { id: req.params.productid } });
+
+          if(list_prod === null || list_prod === undefined){
+            return res.sendStatus(404);
+        }
+        try{await list_prod.destroy();
+         return  res.sendStatus(204);
+      }catch(e){
+          return res.sendStatus(400);
+      }
+
+
         }
 
       });
 
-      return res.sendStatus(204);
+      // return res.sendStatus(204);
 
   }
 
