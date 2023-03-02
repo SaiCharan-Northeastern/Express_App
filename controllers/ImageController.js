@@ -112,8 +112,13 @@ const vUser = (username === name) ? true : false;
       catch(e){
         return res.sendStatus(400);
       }
+      const return_data = await Image.findOne({where: {s3_bucket_path:s3ObjectLocation}});
 
-      return res.sendStatus(201);
+      if(return_data === null || return_data === undefined){
+        return res.sendStatus(400);
+      }
+
+      return res.sendStatus(201).json({return_data});
     }
   
         else {
@@ -156,7 +161,7 @@ const vUser = (username === name) ? true : false;
       const list_products = await Product.findOne({ where: { id: req.params.productid } });
 
      
-      if(list_products === null  || list_products === undefined){
+      if(list_products === "null"  || list_products === "undefined"){
           return res.sendStatus(400);
       }
       if(owner_user_id != list_products.UserId){
@@ -164,7 +169,7 @@ const vUser = (username === name) ? true : false;
       }
       const image_data =  await Image.findOne({where: {id:req.params.id}});
       console.log(image_data);
-      if(image_data === "null"|| image_data == "undefined" ){
+      if(image_data === "null"|| image_data == "undefined" || typeof image_data === "undefined"|| typeof image_data === "null" ){
         return res.sendStatus(400);
       }
       if(image_data.ProductId != req.params.productid){
@@ -220,7 +225,7 @@ const vUser = (username === name) ? true : false;
       const list_products = await Product.findOne({ where: { id: req.params.productid } });
 
      
-      if(list_products === null  || list_products === undefined){
+      if(typeof list_products === "null"|| typeof list_products === "undefined" || list_products === "null"  || list_products === "undefined"  ){
           return res.sendStatus(400);
       }
       if(owner_user_id != list_products.UserId){
@@ -228,7 +233,7 @@ const vUser = (username === name) ? true : false;
       }
       const image_data =  await Image.findAll({where: {ProductId:req.params.productid}});
       console.log(image_data);
-      if(image_data === "null"|| image_data == "undefined" ){
+      if(typeof image_data === "null"|| typeof image_data === "undefined" || image_data === "null"|| image_data == "undefined" ){
         return res.sendStatus(400);
       }
      return  res.status(200).json({image_data});
