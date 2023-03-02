@@ -38,7 +38,7 @@ router.route('/v1/product/:id').delete(Product.delete);
 
 
 const s3 = new aws.S3 ({
-    region: process.env.region,
+    region: process.env.S3_REGION,
     secretAccessKey: process.env.secretAccessKey,
     accessKeyId: process.env.accessKeyId
     

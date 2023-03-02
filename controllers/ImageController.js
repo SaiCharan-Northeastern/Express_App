@@ -294,7 +294,7 @@ const vUser = (username === name) ? true : false;
       const s3Location = image_data.s3_bucket_path.split("/").pop();
 
       const s3 = new aws.S3 ({
-        region: process.env.region,
+        region: process.env.S3_REGION,
         secretAccessKey: process.env.secretAccessKey,
         accessKeyId: process.env.accessKeyId
         
@@ -385,7 +385,7 @@ const vUser = (username === name) ? true : false;
       imgIds.push(image.id)
     });
     const s3 = new aws.S3 ({
-      region: process.env.region,
+      region: process.env.S3_REGION,
       secretAccessKey: process.env.secretAccessKey,
       accessKeyId: process.env.accessKeyId
       
