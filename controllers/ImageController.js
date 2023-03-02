@@ -61,6 +61,10 @@ const vUser = (username === name) ? true : false;
 
 
       const file = req.file;
+
+      if(!req.file) {
+        return res.sendStatus(400);
+      }
       const datatypes = ['image/jpeg','image/png','image/jpg'];
       var b = false;
 
@@ -103,7 +107,7 @@ const vUser = (username === name) ? true : false;
         console.log(`file location : ${s3ObjectLocation}`);
 
     try{
-          await Image.create({
+          const img_return = await Image.create({
           ProductId: productId,
           name: req.file.originalname,
           s3_bucket_path: s3ObjectLocation,
@@ -112,13 +116,13 @@ const vUser = (username === name) ? true : false;
       catch(e){
         return res.sendStatus(400);
       }
-      const return_data = await Image.findOne({where: {s3_bucket_path:s3ObjectLocation}});
+      
 
-      if(return_data === null || return_data === undefined){
+      if(!img_return){
         return res.sendStatus(400);
       }
 
-      return res.sendStatus(201).json({return_data});
+      return res.sendStatus(201).json({img_return});
     }
   
         else {
@@ -169,7 +173,7 @@ const vUser = (username === name) ? true : false;
       }
       const image_data =  await Image.findOne({where: {id:req.params.id}});
       console.log(image_data);
-      if(image_data === "null"|| image_data == "undefined" || typeof image_data === "undefined"|| typeof image_data === "null" ){
+      if(!image_data || image_data === "null"|| image_data == "undefined" || typeof image_data === "undefined"|| typeof image_data === "null" ){
         return res.sendStatus(400);
       }
       if(image_data.ProductId != req.params.productid){
