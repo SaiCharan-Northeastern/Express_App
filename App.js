@@ -7,6 +7,7 @@ const fs = require('fs');
 const bcrypt = require("bcrypt");
 const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
+require('dotenv').config();
 
 const db = require('./models');
 const errorHandler = require('./middleware/error');
@@ -28,6 +29,8 @@ app.use('',user_routes );
 })();
 
   app.listen(port, () => {
+    console.log(process.env.HOST);
+    console.log(process.env.USER);
     console.log(`Example app listening on port ${port}`)
   });
 
