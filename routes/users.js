@@ -34,7 +34,7 @@ router.route('/v1/product/:id').put(Product.update);
 
 router.route('/v1/product/:id').patch(Product.patch);
 
-router.route('/v1/product/:id').delete(Product.delete);
+// router.route('/v1/product/:id').delete(Product.delete);
 
 
 const s3 = new aws.S3 ({
@@ -66,7 +66,7 @@ router.route('/v1/product/:productid/image').get(Image.getAll);
 
 router.route('/v1/product/:productid/image/:imageid').delete(Image.delete);
 
-router.route("/v1/product/:productid/image").delete(Image.deleteAll)
+router.route("/v1/product/:productid").delete(Image.deleteAll);
 
 router.route('/v1/user/:id').delete(
     (req,res)=>{
