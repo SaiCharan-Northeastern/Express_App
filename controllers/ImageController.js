@@ -107,7 +107,7 @@ const vUser = (username === name) ? true : false;
         console.log(`file location : ${s3ObjectLocation}`);
 
     try{
-          const img_return = await Image.create({
+          await Image.create({
           ProductId: productId,
           name: req.file.originalname,
           s3_bucket_path: s3ObjectLocation,
@@ -117,12 +117,10 @@ const vUser = (username === name) ? true : false;
         return res.sendStatus(400);
       }
       
+      const return_data = await Image.findOne({where : {s3_bucket_path : s3ObjectLocation}});
+      
 
-      if(!img_return){
-        return res.sendStatus(400);
-      }
-
-      return res.sendStatus(201).json({img_return});
+      return res.sendStatus(201).json({msg:return_data});
     }
   
         else {
@@ -173,7 +171,10 @@ const vUser = (username === name) ? true : false;
       }
       const image_data =  await Image.findOne({where: {id:req.params.id}});
       console.log(image_data);
-      if(!image_data || image_data === "null"|| image_data == "undefined" || typeof image_data === "undefined"|| typeof image_data === "null" ){
+      if(image_data === "null"|| image_data == "undefined" || typeof image_data === "undefined"|| typeof image_data === "null" ){
+        return res.sendStatus(400);
+      }
+      if(!image_data){
         return res.sendStatus(400);
       }
       if(image_data.ProductId != req.params.productid){
@@ -228,7 +229,10 @@ const vUser = (username === name) ? true : false;
       const owner_user_id = list_1.id;
       const list_products = await Product.findOne({ where: { id: req.params.productid } });
 
-     
+      if(!list_products){
+        return res.sendStatus(400);
+      }
+
       if(typeof list_products === "null"|| typeof list_products === "undefined" || list_products === "null"  || list_products === "undefined"  ){
           return res.sendStatus(400);
       }
@@ -237,6 +241,9 @@ const vUser = (username === name) ? true : false;
       }
       const image_data =  await Image.findAll({where: {ProductId:req.params.productid}});
       console.log(image_data);
+      if(!image_data) {
+        return res.sendStatus(400);
+      }
       if(typeof image_data === "null"|| typeof image_data === "undefined" || image_data === "null"|| image_data == "undefined" ){
         return res.sendStatus(400);
       }
@@ -296,6 +303,9 @@ const vUser = (username === name) ? true : false;
       }
       const image_data =  await Image.findOne({where: {id:req.params.imageid}});
       console.log(image_data);
+      if(!image_data) {
+        return res.sendStatus(400);
+      }
 
       if(image_data === "null"|| image_data == "undefined" ){
         return res.sendStatus(400);
@@ -320,7 +330,7 @@ const vUser = (username === name) ? true : false;
           if (!d_image) {
             return res.sendStatus(400);
           } 
-            return res.sendStatus(200);
+            return res.sendStatus(204);
           
         }
       });
