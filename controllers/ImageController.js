@@ -165,7 +165,9 @@ const vUser = (username === name) ? true : false;
       const owner_user_id = list_1.id;
       const list_products = await Product.findOne({ where: { id: req.params.productid } });
 
-     
+     if(!list_products){
+      return res.sendStatus(400);
+     }
       if(list_products === "null"  || list_products === "undefined"){
           return res.sendStatus(400);
       }
@@ -174,12 +176,14 @@ const vUser = (username === name) ? true : false;
       }
       const image_data =  await Image.findOne({where: {id:req.params.id}});
       console.log(image_data);
-      if(image_data === "null"|| image_data == "undefined" || typeof image_data === "undefined"|| typeof image_data === "null" ){
-        return res.sendStatus(400);
-      }
+
       if(!image_data){
         return res.sendStatus(400);
       }
+      if(image_data === "null"|| image_data == "undefined" || typeof image_data === "undefined"|| typeof image_data === "null" ){
+        return res.sendStatus(400);
+      }
+      
       if(image_data.ProductId != req.params.productid){
        return  res.sendStatus(403);
       }

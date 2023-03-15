@@ -10,6 +10,10 @@ module.exports = {
 create: async(req,res) => {
 
 if (req.body.password && req.body.username && req.body.first_name && req.body.last_name) {
+
+    if (req.body.password.trim() === "" || req.body.username.trim() === "" || req.body.trim() === "" || req.body.last_name.trim() === "" ){
+        res.sendStatus(400);
+    }
    
     var {first_name,last_name,username,password} = req.body;
     const listOne = await User.findOne({ where: { username: username } });
@@ -50,7 +54,7 @@ verify: async(req,res) => {
 
    
         if(req.headers.authorization === undefined){
-           return res.sendStatus(400);
+           return res.sendStatus(401);
         }
         else
         {
@@ -96,7 +100,7 @@ verify: async(req,res) => {
 update: async function (req, res) {
 
     if(req.headers.authorization === undefined){
-     return res.sendStatus(400);
+     return res.sendStatus(401);
     }
     else
     {
