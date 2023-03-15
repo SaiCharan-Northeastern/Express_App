@@ -52,7 +52,7 @@ module.exports = {
                     if(typeof(req.body.quantity) !== "number") {
                         return res.sendStatus(400);
                     }
-                    if(req.body.quantity < 0 && req.body.quantity > 100 ){
+                    if(req.body.quantity < 0 || req.body.quantity > 100 ){
                         return res.sendStatus(400);
                     }
 
