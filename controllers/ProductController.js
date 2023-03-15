@@ -56,14 +56,11 @@ module.exports = {
                         return res.sendStatus(400);
                     }
 
-
-
-
                     if(name === "null" || sku === "null" || description === "null" || manufacturer === "null" ){
                      return res.sendStatus(400);
                     }
 
-                    if(name.trim() === "null"|| sku.trim()=== "null"|| description.trim() === "null"|| manufacturer.trim() === "null"){
+                    if(name.trim() === ""|| sku.trim()=== ""|| description.trim() === ""|| manufacturer.trim() === ""){
                         res.sendStatus(400);
                     }
                    
