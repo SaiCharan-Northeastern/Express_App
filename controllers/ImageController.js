@@ -307,11 +307,16 @@ const vUser = (username === name) ? true : false;
       const image_data =  await Image.findOne({where: {id:req.params.imageid}});
       console.log(image_data);
       if(!image_data) {
-        return res.sendStatus(400);
+        return res.sendStatus(404);
       }
 
       if(image_data === "null"|| image_data == "undefined" ){
-        return res.sendStatus(400);
+        return res.sendStatus(404);
+      }
+      //for product 403 check 
+      const {ProductId} = image_data;
+      if (req.params.productId != ProductId ){
+        return res.sendStatus(403);
       }
       const s3Location = image_data.s3_bucket_path.split("/").pop();
 
