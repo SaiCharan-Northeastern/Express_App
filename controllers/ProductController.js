@@ -11,7 +11,7 @@ module.exports = {
 
 
         if(req.headers.authorization === undefined){
-           return  res.sendStatus(400);
+           return  res.sendStatus(401);
         }
     
            
@@ -41,7 +41,9 @@ module.exports = {
         if ( vUser && verified ){
 
 
-            const{name,description,sku,manufacturer,quantity} = req.body;
+            const {name,description,sku,manufacturer,quantity} = req.body;
+
+
             if(typeof req.body.id !== "undefined" || typeof req.body.date_added !== "undefined"|| typeof req.body.date_last_updated !== "undefined"){
                 return res.sendStatus(400);
             }
@@ -50,13 +52,19 @@ module.exports = {
                     if(typeof(req.body.quantity) !== "number") {
                         return res.sendStatus(400);
                     }
-                    if(req.body.quantity < 0 ){
+                    if(req.body.quantity < 0 && req.body.quantity <=100 ){
                         return res.sendStatus(400);
                     }
 
 
+
+
                     if(name === "null" || sku === "null" || description === "null" || manufacturer === "null" ){
                      return res.sendStatus(400);
+                    }
+
+                    if(name.trim() === "null"|| sku.trim()=== "null"|| description.trim() === "null"|| manufacturer.trim() === "null"){
+                        res.sendStatus(400);
                     }
                    
         
@@ -128,7 +136,7 @@ update: async (req,res)=>{
 
 
     if(req.headers.authorization === undefined){
-        return  res.sendStatus(400);
+        return  res.sendStatus(401);
      }
  
         
@@ -258,7 +266,7 @@ update: async (req,res)=>{
 patch : async (req,res) =>{
 
     if(req.headers.authorization === undefined){
-        return  res.sendStatus(400);
+        return  res.sendStatus(401);
      }
  
         
@@ -422,7 +430,7 @@ delete: async (req,res)=>{
 
 
     if(req.headers.authorization === undefined){
-        return  res.sendStatus(400);
+        return  res.sendStatus(401);
      }
  
         

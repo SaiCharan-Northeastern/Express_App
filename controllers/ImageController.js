@@ -422,7 +422,7 @@ const vUser = (username === name) ? true : false;
           console.log(`message in successful deletion` + data);
         imgIds.forEach(async(idimg)=>{
          try{await Image.destroy({where: {id:idimg}});}
-         catch(e){return res.sendStatus(400);}
+         catch(e){return res.sendStatus(404);}
           }
         );
           // console.log(`deleted image --- ${d_image}`);
