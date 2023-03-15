@@ -315,7 +315,7 @@ const vUser = (username === name) ? true : false;
       }
       //for product 403 check 
       const {ProductId} = image_data;
-      if (req.params.productId != ProductId ){
+      if (req.params.productid != ProductId ){
         return res.sendStatus(403);
       }
       const s3Location = image_data.s3_bucket_path.split("/").pop();
