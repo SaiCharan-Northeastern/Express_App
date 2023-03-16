@@ -29,7 +29,7 @@ module.exports = {
 
 
         if (list_1 === null  || list_1 === undefined){
-            return res.status(400).json({ msg: " User Not Found" });
+            return res.status(401).json({ msg: " User Not Found" });
         }
         else{
        
@@ -61,7 +61,7 @@ module.exports = {
                     }
 
                     if(name.trim() === ""|| sku.trim()=== ""|| description.trim() === ""|| manufacturer.trim() === ""){
-                        res.sendStatus(400);
+                        return res.sendStatus(400);
                     }
                    
         
