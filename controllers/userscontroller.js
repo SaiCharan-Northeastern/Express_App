@@ -12,7 +12,7 @@ create: async(req,res) => {
 if (req.body.password && req.body.username && req.body.first_name && req.body.last_name) {
     
 
-    if (req.body.password.trim() === "" || req.body.username.trim() === "" || req.body.trim() === "" || req.body.last_name.trim() === "" ){
+    if (req.body.password.trim() === "" || req.body.username.trim() === "" || req.body.first_name.trim() === "" || req.body.last_name.trim() === "" ){
         res.sendStatus(400);
     }
    
