@@ -9,8 +9,9 @@ const aws = require('aws-sdk');
 const path = require('path');
 const uuid = require("uuid").v4;
 require('dotenv').config();
-const StatsD = require('node-statsd');
-const {logger,statsd} = require('../App');
+// const StatsD = require('node-statsd');
+// const logger = require('../App.js');
+// const statsd = require('../App.js');
 
 // const BUCKET = "my-unique-bucket-62cb7f9a6334759e"
 
@@ -21,14 +22,14 @@ router.get('/', (req,res)=> {
 router.get('/healthz', (req,res)=> {
 
     try{
-		statsd.increment('endpoint_all');
-		statsd.increment('endpoint_healthz');
-		logger.info('Healthz Received Healthz API call');
+		// statsd.increment('endpoint_all');
+		// statsd.increment('endpoint_healthz');
+		// logger.info('Healthz Received Healthz API call');
         return res.status(200).json({msg:'Heartbeat'});
 		
     }
     catch(error){
-		logger.warn("Healtz API Error Caught in healthz call"+error);
+		// logger.warn("Healtz API Error Caught in healthz call"+error);
         return response.sendStatus(400);
     } 
 

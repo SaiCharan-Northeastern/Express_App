@@ -3,8 +3,9 @@
 const {models : {User}} =  require('../models');
 const bcrypt = require("bcrypt");
 const users = require('../models/users');
-const {logger,statsd} = require('../App');
-const StatsD = require('node-statsd');
+const logger = require('../App.js');
+const statsd = require('./index.js')
+// const StatsD = require('node-statsd');
 
 
 
