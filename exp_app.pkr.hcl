@@ -45,6 +45,11 @@ source = "./Express_App.service"
 destination =  "/tmp/ExpressApp.service"
 }
 
+provisioner "file" {
+    source      = "agentConfig.json"
+    destination = "/home/ec2-user/agentConfig.json"
+  }
+
   provisioner "shell" {
     script = "./app.sh"
   }
