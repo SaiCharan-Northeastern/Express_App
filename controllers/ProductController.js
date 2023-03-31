@@ -2,7 +2,7 @@ const {models : {Product}} =  require('../models');
 const bcrypt = require("bcrypt");
 const {models : {User}} =  require('../models');
 const StatsD = require('node-statsd');
-const logger = require('../App.js');
+const logger = require('../logger.js');
 const statsd = require('./index.js')
 
 

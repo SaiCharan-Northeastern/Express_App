@@ -3,7 +3,7 @@
 const {models : {User}} =  require('../models');
 const bcrypt = require("bcrypt");
 const users = require('../models/users');
-const logger = require('../App.js');
+const logger = require('../logger.js');
 const statsd = require('./index.js')
 // const StatsD = require('node-statsd');
 

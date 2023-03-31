@@ -9,6 +9,7 @@ const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
 require('dotenv').config();
 const path = require("path");
+const logger = require('./logger.js');
 // const StatsD = require('node-statsd');
 // const statsd = new StatsD({ host: "localhost", port: 8125 });
 
@@ -21,37 +22,6 @@ const user_routes = require ('./routes/users');
 
 const {uploadFile, getFileStream} =  require("./s3");
 
-const { format, createLogger, transports  } = require('winston');
-/*
-const winston = require('winston');
-
-const winston = require('winston');
-
-const logger = winston.createLogger({
-
-  format: format.combine(
-      format.timestamp(),
-      format.json()
-    ),
-  transports: [
-    new winston.transports.File({ filename: path.join('./logs', 'webApp.log') })
-  ]
-});
-
-logger.info("user created --->");
-*/
-
-const logger = createLogger({
-  format: format.combine(
-      format.timestamp(),
-      format.json()
-    ),
-transports: [
-  new transports.File({
-  filename: path.join('./logs', 'webApp.log')
-  })
-]
-});
 
 
 
@@ -94,4 +64,4 @@ app.use('',user_routes );
   //  return  res.status(201).json({imagePath: `/images/${result?.Key}`});
   //   })
 
-module.exports = {app, logger};
+module.exports = app;
