@@ -3,16 +3,23 @@
 const {models : {User}} =  require('../models');
 const bcrypt = require("bcrypt");
 const users = require('../models/users');
+const {logger,statsd} = require('../App');
+const StatsD = require('node-statsd');
+
 
 
 module.exports = {
 
 create: async(req,res) => {
 
+    statsd.increment('endpoint_all');
+	statsd.increment('endpoint_userCreate');
+
 if (req.body.password && req.body.username && req.body.first_name && req.body.last_name) {
     
 
     if (req.body.password.trim() === "" || req.body.username.trim() === "" || req.body.first_name.trim() === "" || req.body.last_name.trim() === "" ){
+        logger.info("user details are not accepted -- empty values");
         res.sendStatus(400);
     }
    
@@ -20,13 +27,16 @@ if (req.body.password && req.body.username && req.body.first_name && req.body.la
     const listOne = await User.findOne({ where: { username: username } });
 
     if(typeof req.body.id !== "undefined"){
+        logger.info("id is auto generated");
         return res.sendStatus(400);
+       
     }
 
     if (listOne === null) {
 
         const salt = await bcrypt.genSalt(10);
         password =  await bcrypt.hash(req.body.password,salt);
+        
 
         await User.create ({
             username,
@@ -34,6 +44,7 @@ if (req.body.password && req.body.username && req.body.first_name && req.body.la
             first_name,
             last_name
         });
+        logger.info("user created --->");
 
         const list_get = await User.findOne({ where: { username: username } });
         const {id,createdAt,updatedAt} = list_get
@@ -41,11 +52,13 @@ if (req.body.password && req.body.username && req.body.first_name && req.body.la
     }
     else {
         res.sendStatus(400);
+        logger.info("user already exists -- Username taken");
     }
     
 }
 else {
     res.sendStatus(400);
+    logger.info("user details are not accepted -- empty values");
 }
 
 },
@@ -53,8 +66,13 @@ else {
 
 verify: async(req,res) => {
 
-   
+
+try{
+statsd.increment('endpoint_all');
+statsd.increment('endpoint_userGet');
+
         if(req.headers.authorization === undefined){
+           logger.info("auth required");
            return res.sendStatus(401);
         }
         else
@@ -70,7 +88,9 @@ verify: async(req,res) => {
         const list_1 = await User.findOne({ where: { username: name } });
 
         if (list_1 === null || req.body === ""){
+            logger.info("No user matches the following username");
             return res.status(401).json({ msg: " User Not Found" })
+            
         }
         else {
 
@@ -82,26 +102,35 @@ verify: async(req,res) => {
                     const {username,id,createdAt,updatedAt,first_name,last_name} = list_1
                     return res.status(200).json({username,id,first_name,last_name,createdAt,updatedAt}) }  
                 else{
-                   
+                    logger.info("Access mismatch --> id level check");
                     return res.sendStatus(403);
                     }
                 }
             else {
+                logger.info("Password mismatch");
                 return res.sendStatus(401);
             }
         }
         else {
+            logger.info("Username mismatch");
             return  res.sendStatus(401);
+           
         }
         }
 }
-},
+}
+catch(e){
+logger.warn("error getting user data+"+e);
+return res.sendStatus(400);
+}},
 
 
 update: async function (req, res) {
 
     if(req.headers.authorization === undefined){
+    logger.info("Auth required");
      return res.sendStatus(401);
+    
     }
     else
     {
@@ -116,7 +145,9 @@ update: async function (req, res) {
     const list_1 = await User.findOne({ where: { username: name } });
 
     if (list_1 === null){
+        logger.info("User not found");
         return res.sendStatus(400);
+        
     }
     else {
 
@@ -145,9 +176,10 @@ update: async function (req, res) {
                       where: { username: name },
                     }
                   );
-
+                  logger.info("Userdata updated");
                 return res.sendStatus(204);
             }  catch(e){
+                logger.warn("error creating user"+e);
                 return res.sendStatus(400);
             }
             }
@@ -157,15 +189,17 @@ update: async function (req, res) {
         }
                
             else{
-              
+                logger.info("Access mismatch ==> id check");
                 return res.sendStatus(403);
                 }
             }
         else {
+            logger.info("Password mismatch");
             return res.sendStatus(401);
         }
     }
     else {
+        logger.info("Username mismatch");
         return  res.sendStatus(401);
     }
     }

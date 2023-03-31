@@ -3,6 +3,8 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 let mysql = require('mysql2');
 require('dotenv').config();
+const StatsD = require('node-statsd');
+const {logger,statsd} = require('../App');
 
 const bcrypt = require('bcrypt');
 // const upload = multer({ dest: 'uploads/'});

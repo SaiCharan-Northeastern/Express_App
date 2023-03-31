@@ -11,6 +11,21 @@ sudo yum update -y
 
     sudo yum install mysql -y
 
+
+    echo "Installing Cloudwatch Agent"
+
+#download cloudwatch agent rpm
+sudo wget https://s3.us-east-1.amazonaws.com/amazoncloudwatch-agent-us-east-1/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
+
+#install cloudwatch agent
+sudo rpm -U ./amazon-cloudwatch-agent.rpm
+
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/home/ec2-user/agentConfig.json -s
+
+#check if cloudwatch agent is running
+sudo systemctl status amazon-cloudwatch-agent.service
+
+
     # Install MySQL
     # sudo amazon-linux-extras install epel -y 
     # sudo yum install https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm -y
