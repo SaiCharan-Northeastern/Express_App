@@ -1,7 +1,8 @@
 const {models : {Product}} =  require('../models');
 const bcrypt = require("bcrypt");
 const {models : {User}} =  require('../models');
-
+const StatsD = require('node-statsd');
+const {logger,statsd} = require('../App');
 
 
 

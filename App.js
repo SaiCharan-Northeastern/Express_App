@@ -8,6 +8,9 @@ const bcrypt = require("bcrypt");
 const util = require('util');
 const unlinkFile = util.promisify(fs.unlink);
 require('dotenv').config();
+const path = require("path");
+const StatsD = require('node-statsd');
+const statsd = new StatsD({ host: "localhost", port: 8125 });
 
 const db = require('./models');
 const errorHandler = require('./middleware/error');
@@ -18,6 +21,23 @@ const user_routes = require ('./routes/users');
 
 const {uploadFile, getFileStream} =  require("./s3");
 
+const { format, createLogger, transports  } = require('winston');
+
+
+
+const logger = createLogger({
+  format: format.combine(
+      format.timestamp(),
+      format.json()
+    ),
+transports: [
+  new transports.File({
+  filename: path.join('./logs', 'webApp.log')
+  })
+]
+});
+
+
 
 app.use(express.json());
 
@@ -25,12 +45,17 @@ app.use('',user_routes );
 
 
 ( async ()=> {
-    await db.sequelize.sync();
+  try{
+    await db.sequelize.sync();}
+    catch(e){
+      logger.warn("database connection failed");
+    }
 })();
 
   app.listen(port, () => {
     console.log(process.env.HOST);
     console.log(process.env.USER);
+    logger.info("server running");
     console.log(`Example app listening on port ${port}`)
   });
 
@@ -53,4 +78,4 @@ app.use('',user_routes );
   //  return  res.status(201).json({imagePath: `/images/${result?.Key}`});
   //   })
 
-module.exports = app;
+module.exports = {app, logger, statsd};
