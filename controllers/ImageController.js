@@ -4,7 +4,7 @@ const multerS3 = require('multer-s3');
 let mysql = require('mysql2');
 require('dotenv').config();
 // const StatsD = require('node-statsd');
-const logger = require('../App.js');
+const logger = require('../logger.js');
 const statsd = require('./index.js')
 
 const bcrypt = require('bcrypt');
@@ -329,8 +329,8 @@ const vUser = (username === name) ? true : false;
 
       const s3 = new aws.S3 ({
         region: process.env.S3_REGION,
-        secretAccessKey: process.env.secretAccessKey,
-        accessKeyId: process.env.accessKeyId
+        // secretAccessKey: process.env.secretAccessKey,
+        // accessKeyId: process.env.accessKeyId
         
     })
       var params = { Bucket: process.env.bucketname, Key: s3Location };
