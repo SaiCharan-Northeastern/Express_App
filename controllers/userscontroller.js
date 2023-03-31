@@ -128,6 +128,10 @@ return res.sendStatus(400);
 
 update: async function (req, res) {
 
+
+    statsd.increment('endpoint_all');
+    statsd.increment('endpoint_updateUser');
+
     if(req.headers.authorization === undefined){
     logger.info("Auth required");
      return res.sendStatus(401);

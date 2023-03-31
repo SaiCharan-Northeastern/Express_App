@@ -11,8 +11,10 @@ module.exports = {
 
     create: async(req,res) => {
 
-
+        statsd.increment('endpoint_all');
+        statsd.increment('endpoint_productCreate');
         if(req.headers.authorization === undefined){
+            logger.info('no auth header for create product');
            return  res.sendStatus(401);
         }
     
@@ -31,6 +33,7 @@ module.exports = {
 
 
         if (list_1 === null  || list_1 === undefined){
+            logger.info("user not found");
             return res.status(401).json({ msg: " User Not Found" });
         }
         else{
@@ -52,17 +55,21 @@ module.exports = {
             const owner_user_id = list_1.id;
               
                     if(typeof(req.body.quantity) !== "number") {
+                        logger.info("quantity not a number");
                         return res.sendStatus(400);
                     }
                     if(req.body.quantity < 0 || req.body.quantity > 100 ){
+                        logger.info("quantity out of bounds");
                         return res.sendStatus(400);
                     }
 
                     if(name === "null" || sku === "null" || description === "null" || manufacturer === "null" ){
+                        logger.info("mandatory requirements not met");
                      return res.sendStatus(400);
                     }
 
                     if(name.trim() === ""|| sku.trim()=== ""|| description.trim() === ""|| manufacturer.trim() === ""){
+                        logger.info("mandatory requirements not met");
                         return res.sendStatus(400);
                     }
                    
@@ -82,11 +89,13 @@ module.exports = {
                
                 }
                 catch(e){
+                    logger.error("error creating prod");
                   return res.status(400).json({msg: "duplicate sku"});
                 }
                
 
                 const data = await Product.findOne({ where: { sku : sku } });
+                logger.info("product created  -->");
 
                 return res.status(201).json({"id": data.id , "name": data.name, "description": data.description, "sku": sku, "manufacturer": manufacturer,
             "quantity" : quantity, "date_added" : data.createdAt, "date_last_updated": data.updatedAt, "owner_user_id": data.UserId }) 
@@ -95,7 +104,8 @@ module.exports = {
             
             
             else {
-                
+
+                logger.info("not verified");
                 return res.status(401).json({msg: "not valid"});
             }
         }
@@ -107,7 +117,8 @@ module.exports = {
 get: async (req,res)=>{
 
 
-
+    statsd.increment('endpoint_all');
+    statsd.increment('endpoint_getProd');
     const search_id = req.params.id;
 
     console.log(search_id);
@@ -115,11 +126,13 @@ get: async (req,res)=>{
     const list_fetched =  await Product.findOne({ where: { id: search_id } });
 
     if(list_fetched === null || typeof list_fetched === "undefined") {
+        logger.info("product not found")
         return res.sendStatus(400);
 
     }
     else {
-       
+
+        logger.info("product found -->")
         return res.status(200).json({"id": list_fetched.id , "name": list_fetched.name, "description": list_fetched.description, "sku": list_fetched.sku, "manufacturer": list_fetched.manufacturer,
         "quantity" : list_fetched.quantity, "date_added" : list_fetched.createdAt, "date_last_updated": list_fetched.updatedAt, "owner_user_id": list_fetched.UserId })
 
@@ -133,8 +146,11 @@ get: async (req,res)=>{
 
 update: async (req,res)=>{
 
+    statsd.increment('endpoint_all');
+    statsd.increment('endpoint_putProd');
 
     if(req.headers.authorization === undefined){
+        logger.info("product not found")
         return  res.sendStatus(401);
      }
  
@@ -208,9 +224,11 @@ update: async (req,res)=>{
                   where: { id: search_code },
                 }
               );
+           logger.info("product updated -->");
             res.sendStatus(204);
         }
         catch(e){
+            logger.error("product auth failed")
             res.sendStatus(400);
         }
 
@@ -232,14 +250,18 @@ update: async (req,res)=>{
                       where: { id: search_code },
                     }
                   );
+                logger.info("product updated -->");
                 return res.sendStatus(204);
             }
             catch(e){
+                logger.error("product auth with id failed-->");
                 res.sendStatus(400);
             }
+
         }
     
     else{
+        logger.warn("prod nor found");
         res.sendStatus(400);
     }
         }
@@ -247,11 +269,13 @@ update: async (req,res)=>{
     }
 
             else{
+                logger.error("forbidden based on id")
                 res.sendStatus(403);
             }
 
     }
     else{
+        logger.error("auth failed user details");
         res.sendStatus(401);
     }
 
@@ -264,7 +288,13 @@ update: async (req,res)=>{
 
 patch : async (req,res) =>{
 
+    statsd.increment('endpoint_all');
+    statsd.increment('endpoint_patchProd');
+
+
+
     if(req.headers.authorization === undefined){
+        logger.info("basic auth required");
         return  res.sendStatus(401);
      }
  
@@ -282,6 +312,7 @@ patch : async (req,res) =>{
 
 
      if (list_1 === null  || list_1 === undefined){
+        logger.warn("no product found");
          return res.sendStatus(400);
      }
      else{
@@ -289,6 +320,7 @@ patch : async (req,res) =>{
         const list_user = await User.findOne({where: {username: name}});
 
         if(list_user === null || list_user === undefined){
+            logger.warn("no user found");
             return res.sendStatus(400);
         }
             var  {username,password} =  list_user;
@@ -302,16 +334,19 @@ patch : async (req,res) =>{
         if (list_1.UserId === list_user.id){
 
         if(typeof req.body.quantity !== "undefined" && typeof(req.body.quantity) !== "number") {
+            logger.warn("quantity type not number");
             return res.sendStatus(400);
         }
-        if(req.body.quantity < 0 ){
+        if(req.body.quantity < 0 && req.body.quantity > 100 ){
+            logger.warn("quantity out of bound");
             return res.sendStatus(400);
         }
 
         let {name,description,sku,manufacturer,quantity} = req.body
 
         if( typeof name === "undefined" && typeof sku === "undefined" && typeof description === "undefined" && typeof manufacturer === "undefined" && typeof quantity === "undefined"){
-         return res.sendStatus(400);
+            logger.warn("mandatory items not found");
+            return res.sendStatus(400);
         }
 
         if(typeof req.body.date_added !== "undefined" || typeof req.body.date_last_updated !== "undefined" || typeof req.body.id !== "undefined" ){
@@ -351,9 +386,11 @@ patch : async (req,res) =>{
                           where: { id: search_code },
                         }
                       );
+                    logger.info("product updated");
                     res.sendStatus(204);
                 }
                 catch(e){
+                    logger.error("error while updating");
                     res.sendStatus(400);
                 }
             }
@@ -373,13 +410,16 @@ patch : async (req,res) =>{
                           where: { id: search_code },
                         }
                       );
+                      logger.info("Product updated");
                     res.sendStatus(204);
                 }
                 catch(e){
+                    logger.warn("no product found");
                     res.sendStatus(400);
                 }
             }
             else{
+                logger.warn("no product found");
                 return res.sendStatus(400);
             }
             }
@@ -401,6 +441,7 @@ patch : async (req,res) =>{
                 res.sendStatus(204);
             }
             catch(e){
+                logger.error("error updating");
                 res.sendStatus(400);
             }
     
@@ -410,11 +451,13 @@ patch : async (req,res) =>{
     }
 
             else{
+                logger.error("Access error");
                 res.sendStatus(403);
             }
 
     }
     else{
+        logger.error("Auth failed");
         res.sendStatus(401);
     }
 
@@ -427,8 +470,12 @@ patch : async (req,res) =>{
 
 delete: async (req,res)=>{
 
+    statsd.increment('endpoint_all');
+    statsd.increment('endpoint_deleteProd');
+
 
     if(req.headers.authorization === undefined){
+        logger.warn("no auth");
         return  res.sendStatus(401);
      }
  
@@ -445,6 +492,7 @@ delete: async (req,res)=>{
 
    
      if(list_1 === null || list_1 === undefined){
+        logger.error("product not found");
         return res.sendStatus(400);
     }
         var  {username,password} =  list_1;
@@ -453,26 +501,31 @@ delete: async (req,res)=>{
  const vUser = (username === name) ? true : false;
 const list_prod = await Product.findOne({ where: { id: req.params.id } });
 if(list_prod === null || list_prod === undefined){
+    logger.error("product not found")
     return res.sendStatus(404);
 }
         if(verified && vUser){
             
             if (list_prod.UserId === list_1.id){
                 try{await list_prod.destroy();
+                    logger.info("product deleted --->")
                     res.sendStatus(204);
                 }catch(e){
+                    logger.error("product deletion error")
                     res.sendStatus(400);
                 }
 
                 
             }
             else{
+                logger.error("access error")
                 return res.sendStatus(403);
             }
 
 
         }
         else{
+            logger.error("username and password mismatch found")
             return res.sendStatus(401);
         }
 
