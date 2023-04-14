@@ -42,8 +42,8 @@ jobs:
     - name: Configuring Demo AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-          aws-access-key-id: "AKIA5XTV4KA7E4X34646" 
-          aws-secret-access-key: "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"
+          aws-access-key-id: ${{secrets.ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.SECRET_ACCESS_KEY}}
           aws-region: 'us-east-1'
 
     - name: Update launch template and refresh auto scaling group
