@@ -39,6 +39,23 @@ jobs:
       run: |
         packer build .
 
+    - name: Configuring Demo AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-access-key-id: "AKIA5XTV4KA7MH3V7SQI" 
+          aws-secret-access-key: "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"
+          aws-region: 'us-east-1'
+
+    - name: Update launch template and refresh auto scaling group
+      run: |
+            ami_ID=$(aws ec2 describe-images --filters "Name=name,Values=amazon-linux-2-node-mysql-*" "Name=owner-id,Values=944066285630" --query "reverse(sort_by(Images, &CreationDate))[0].ImageId")
+            echo $ami_ID
+            template_ID=$(aws ec2 describe-launch-templates --launch-template-name asg_launch_config | jq '.LaunchTemplates[].LaunchTemplateId')
+            echo $template_ID
+            aws ec2 create-launch-template-version --launch-template-name asg_launch_config --version-description WebVersion2 --source-version 1 --launch-template-data "ImageId=$ami_ID"
+            aws autoscaling update-auto-scaling-group --auto-scaling-group-name csye6225-asg-spring2023 --launch-template LaunchTemplateId=$template_ID,Version='$Latest'
+            aws autoscaling start-instance-refresh --auto-scaling-group-name csye6225-asg-spring2023
+
     - name: Clean up
       run: |
         rm -r dist
