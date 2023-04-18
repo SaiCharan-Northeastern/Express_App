@@ -39,7 +39,7 @@ router.get('/healthz', (req,res)=> {
     
 });
 
-router.get('/health', (req,res)=> {
+router.get('/test', (req,res)=> {
 
     try{
 		statsd.increment('endpoint_all');
