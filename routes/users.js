@@ -56,19 +56,19 @@ router.get('/test', (req,res)=> {
     
 });
 
-router.route('/v1/user/:id').get(User.verify);
+router.route('/v2/user/:id').get(User.verify);
 
-router.route('/v1/user').post(User.create);
+router.route('/v2/user').post(User.create);
 
-router.route('/v1/user/:id').put(User.update);
+router.route('/v2/user/:id').put(User.update);
 
-router.route('/v1/product').post(Product.create);
+router.route('/v2/product').post(Product.create);
 
-router.route('/v1/product/:id').get(Product.get);
+router.route('/v2/product/:id').get(Product.get);
 
-router.route('/v1/product/:id').put(Product.update);
+router.route('/v2/product/:id').put(Product.update);
 
-router.route('/v1/product/:id').patch(Product.patch);
+router.route('/v2/product/:id').patch(Product.patch);
 
 // router.route('/v1/product/:id').delete(Product.delete);
 
@@ -94,23 +94,23 @@ const upload = multer({
 });
 
 
-router.route('/v1/product/:id/image').post(upload.single("file"),Image.create);
+router.route('/v2/product/:id/image').post(upload.single("file"),Image.create);
 
-router.route('/v1/product/:productid/image/:id').get(Image.getone);
+router.route('/v2/product/:productid/image/:id').get(Image.getone);
 
-router.route('/v1/product/:productid/image').get(Image.getAll);
+router.route('/v2/product/:productid/image').get(Image.getAll);
 
-router.route('/v1/product/:productid/image/:imageid').delete(Image.delete);
+router.route('/v2/product/:productid/image/:imageid').delete(Image.delete);
 
-router.route("/v1/product/:productid").delete(Image.deleteAll);
+router.route("/v2/product/:productid").delete(Image.deleteAll);
 
-router.route('/v1/user/:id').delete(
+router.route('/v2/user/:id').delete(
     (req,res)=>{
         res.status(501).json({msg:"not implemented"})
     }
 );
 
-router.route('/v1/user/:id').patch(
+router.route('/v2/user/:id').patch(
     (req,res)=>{
         res.status(501).json({msg:"not implemented"})
     }
