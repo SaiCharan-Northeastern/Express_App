@@ -1,7 +1,7 @@
 # Express_App
 
 
-# CSYE 6225 Assignment 6
+# CSYE 6225 Assignment 9
 
 This assignment is for creating rest end point for checking health end point for get end point, user endpoints for put, post and get methods.
 
